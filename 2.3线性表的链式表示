@@ -1,0 +1,1920 @@
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class Test {
+    public static void main(String[] args) {
+
+        test01();
+        //test15();
+    }
+
+    public static void show(LNode head) {
+        if (head == null)
+            System.out.println("滚几把蛋");
+        while (head != null) {
+            System.out.println(head.data);
+            head = head.next;
+        }
+    }
+
+    //第一题:设计递归算法,删除单链表(不带头结点)中所有值为x的节点
+    //答案思想:递归算法首先考虑特殊情况
+    //1.head==null return;
+    //2.head.data==x 删除,然后method(递归函数)(head.next);
+    //3.head.data!=x method(head.next);
+
+    public static void test01() {
+        LinkList_noHead Ln = new LinkList_noHead();
+        Ln.tailInsert();
+        //method01(Ln, 3);
+        System.out.println("请输入要删除的值");
+        Scanner in=new Scanner(System.in);
+        int x=in.nextInt();
+        method01(Ln,x);
+        Ln.show();
+    }
+
+    /*public static void method01(LNode head, int x) {
+        if(head==null)
+            return;
+        if(head.data==x){
+            head=head.next;
+            method01(head,x);
+        }
+        else{
+            method01(head.next,x);
+        }
+    }*///以为要在下面调用递归使用,其实没啥用,Java没有引用,c++有引用就简单很多
+    public static void method01(LinkList_noHead list, int x) {
+    //public static void method01(LNode head, int x) {
+
+        /*public static void method01(LinkList_head, int x) {
+        if (list.head == null)
+            return;
+        if (list.head.data == x) {//删除
+            list.head = list.head.next;
+        }
+        if (list.head.data != x) {
+            list.head = list.head.next;
+            method01(list, x);
+        }*///failure
+        /*if(head==null)
+            return;
+        if(head.data==x){
+            head=head.next;
+            method01(head,x);
+        }
+        if(head.data!=x){
+            method01(head.next,x);
+        }*///failure 2.0
+        /*if(head==null)
+            return;
+        if(head.data==x){
+            head=head.next;
+            method01(head,x);
+        }
+        else{
+            method01(head.next,x);
+        }*///failure 3.0//bug在于传入的是(非引用)局部变量,不改变实际的值
+        if(list.head==null){
+            return;
+        }
+        if(list.head.data==x){
+            list.head=list.head.next;
+            method01(list,x);
+        }else{
+            LinkList_noHead newList=new LinkList_noHead();
+            newList.head=list.head.next;
+            method01(newList,x);
+            list.head.next=newList.head;
+        }
+    }
+    //第一题 victory TRUE
+
+    //第二题:带头结点的单链表,删除所有值为x的节点,释放空间,x的节点不唯一
+    public static void test02() {
+        /*LinkList_head list=new LinkList_head();
+        list.tailInsert();
+        for(int i=1;i<=list.getLength();i++){
+            System.out.println(list.get(i));
+        }//1.0尾插法大概成功
+
+        LinkList_head list = new LinkList_head();
+        LNode n1=new LNode(1);
+        LNode n2=new LNode(2);
+        LNode n3=new LNode(3);
+        LNode n4=new LNode(4);
+        LNode n5=new LNode(5);
+        LNode n6=new LNode(6);
+        list.tailInsert(n1);
+        list.tailInsert(n3);
+        list.tailInsert(n2);
+        list.tailInsert(n1);//n1只是地址,不是一个新的节点
+        list.tailInsert(n1);
+        list.tailInsert(n3);
+        list.tailInsert(n4);
+        list.tailInsert(n6);
+        for(int i=1;i<= list.getLength();i++){
+            System.out.println(list.get(i));
+        }
+        list.show();//失败版本尾插法和头插法
+*/
+        LinkList_head list = new LinkList_head();
+        //list.headInsert();//尾插法好像
+        list.tailInsert();
+        System.out.println("请输入x的值");
+        Scanner in = new Scanner(System.in);
+        int x = in.nextInt();
+        //list.show();
+        method02(list, x);
+        list.show();
+    }
+
+    public static void method02(LinkList_head list_head, int x) {
+        /*for (int i = 1; i <= list_head.getLength() ; i++) {
+            //等于x删除后length-1而i依旧增加
+
+            if(list_head.get(i)==x){
+                list_head.deleteNode(i);
+            }
+        }*/
+        for (int i = 1; i <= list_head.getLength(); i++) {
+            if (list_head.get(i) == x) {
+                list_head.deleteNode(i);
+                i--;//list.length删除后变短
+            }
+        }
+    }
+    //第二题 victory true
+
+    //第三题:设L为带头结点的单链表,实现从尾到头反向输出每一个节点
+    //答案算法:1.递归
+    //
+    //2.用栈存储
+    public static void test03() {
+        LinkList_head list = new LinkList_head();
+        list.tailInsert();
+        method03(list.getHeadNode().next);
+
+    }
+
+    //递归解决
+    public static void method03(LNode node) {
+        //算法思想:从头结点开始遍历,将元素存放在一个数组里.然后反向输出
+        //tips:可不可以直接头插法插入,然后输出
+        /*int[] temp = new int[list_head.getLength()];
+        for (int i = 1; i <= list_head.getLength(); i++) {
+            temp[i - 1] = list_head.get(i);
+        }
+        for (int i = temp.length - 1; i >= 0; i--) {
+            System.out.printf(temp[i] + " ");
+        }*/
+        if (node == null)
+            return;
+        if (node.next != null) {
+            method03(node.next);
+            System.out.println(node.data);//递归出来之后要打印该节点的值
+        } else {//temp是最后一个节点
+            System.out.println(node.data);
+        }
+    }
+    //第三题 victory true
+
+    //第四题:编写算法从带头结点的单链表中删除唯一最小值节点的高效算法
+    //答案:设置prev,curr,minPrev,minCurr四个指针,分别移动
+    public static void test04() {
+        LinkList_head list = new LinkList_head();
+        list.tailInsert();
+        method04(list);
+        list.show();
+    }
+
+    public static void method04(LinkList_head list_head) {
+        //O(n)的时间复杂度
+        /*int min = 1;
+        for (int i = 2; i <= list_head.getLength(); i++) {
+            if (list_head.get(i) < list_head.get(min)) {
+                min = i;
+            }
+        }
+        list_head.deleteNode(min);*/
+        LNode prev = list_head.getHeadNode();
+        LNode curr = list_head.getHeadNode().next;
+        int min = curr.data;
+        LNode minPrev = prev;
+        LNode minCurr = curr;
+        while (curr != null) {
+            if (curr.data < min) {
+                min = curr.data;
+                minCurr = curr;
+                minPrev = prev;
+            }
+            prev = curr;
+            curr = curr.next;
+        }
+        //找到最小节点
+        minPrev.next = minCurr.next;
+        //删除最小节点
+    }
+    //第四题 victory true
+
+    //第五题:将带头结点的单链表就地逆置,即空间复杂度为O(1)
+    //很重要,但我真不会
+    //答案:方法一:取出头结点,剩下的节点注意使用头插法重新插入链表
+    //方法二:循环:首先找到最后一个节点,将他与头结点链接上,
+    public static void test05() {
+        LinkList_head list = new LinkList_head();
+        list.tailInsert();
+        method05_2(list);
+        list.show();
+    }
+
+    //方法一:
+    public static void method05_1(LinkList_head list) {
+        //1.头结点取出,后置为null
+        LNode head = list.getHeadNode();
+        if (list.getLength() <= 1)
+            return;
+        LNode temp = head.next;//第一个节点
+        LNode p = temp.next;//temp的后面一个节点
+        head.next = null;
+        //2.使用头插法
+        while (true) {
+            temp.next = head.next;
+            head.next = temp;
+            temp = p;
+            if (p == null)
+                break;
+            p = p.next;
+        }
+    }
+
+    public static void method05_2(LinkList_head list) {//头结点
+        if (list.getLength() <= 1) {
+            return;
+        }
+        //1.先置第一个节点1为最后一个节点
+        LNode temp = list.getHeadNode().next;
+        LNode p = temp.next;//1后面的节点
+        LNode r = p.next;
+        temp.next = null;
+        //让后面的节点2指向前一个节点1
+        //就是让后面的节点不断指向前面的节点
+        while (true) {
+            p.next = temp;//p(2)后面的节点丢失了,需要保存起来,建立变量r保存
+            temp = p;//保存前面的节点
+            p = r;
+            if (r == null)
+                break;
+            r = r.next;
+        }
+        list.getHeadNode().next = temp;
+    }
+    //第五题 victory true
+
+    //第六题:带头结点的单链表设计算法使其元素递增有序
+    //答案:类似于插入排序 算法时间复杂度是O(N2)
+    public static void test06() {
+        LinkList_head list = new LinkList_head();
+        list.tailInsert();
+        method06(list);
+        list.show();
+    }
+
+    public static void method06(LinkList_head list) {
+        //算法思想:类似于插入排序
+        //还有个想法:提取元素快排,排好后,依次赋值 可以
+        /*LNode r=list.getHeadNode().next.next;//第二个节点开始
+        LNode curr=r;
+        while (r!=null){
+            //从第一个节点开始依次往后比较
+            LNode temp=list.getHeadNode().next;//第一个节点
+            LNode prev=list.getHeadNode();//前驱节点
+            while (temp!=curr &&temp.data< curr.data){
+                prev=temp;
+                temp=temp.next;
+            }
+            //prev是真正的位置
+            //开始插入节点
+            curr.next=prev.next;
+            prev.next=curr;
+            r=r.next;
+            curr=r;
+        }*/
+        //failure
+
+        if (list.getLength() == 0)
+            return;
+        LNode r = list.getHeadNode().next.next;//从第二个节点开始
+        LNode curr = r;//当前要交换的元素
+        LNode prevCurr = list.getHeadNode().next;//curr的前驱结点
+        while (r != null) {
+            //找到current应该在的位置
+            //从第一个节点开始
+            LNode temp = list.getHeadNode().next;
+            LNode prev = list.getHeadNode();
+            while (temp != curr && temp.data <= curr.data) {
+                prev = temp;
+                temp = temp.next;
+            }
+            if (temp.data > curr.data) {
+                //以下是改变了current的位置,但是要一同改变current周围节点的链接
+                prevCurr.next = curr.next;
+                //prev就应该是所在的位置,将prev的后置设置为current
+                curr.next = prev.next;
+                prev.next = curr;
+            }
+            /*if(temp==curr){
+                //curr就应该在这个位置
+            }*/
+            prevCurr = curr;
+            r = r.next;
+            curr = r;
+        }
+    }
+
+    public static void swap(int i, int j, LinkList_head list_head) {//交换两个元素的位置
+        //i和j是相邻的
+
+    }
+    //第六题 victory true
+
+    //第七题: 在带头结点的单链表中(无序),编写一个函数,删除表中介于给定s和t中的节点
+    public static void test07() {
+        LinkList_head list = new LinkList_head();
+        list.tailInsert();
+        System.out.println("请输入一个范围,s表示小的,t表示大的");
+        Scanner in = new Scanner(System.in);
+        System.out.print("s=");
+        int min = in.nextInt();
+        System.out.println();
+        System.out.print("t=");
+        int max = in.nextInt();
+        method07(min, max, list);
+        list.show();
+    }
+
+    public static void method07(int s, int t, LinkList_head list) {
+        //算法:设置两个指针,i和j一起往前移动,当i碰到s-t之间的元素就不动,j一直往前移动,遇到不是s-t的元素就把他接到i后面
+        LNode prev = list.getHeadNode();
+        LNode curr = list.getHeadNode().next;
+        while (curr != null) {
+            if (contain(s, t, curr.data)) {//删除节点
+                prev.next = curr.next;
+            } else {
+                prev = curr;
+            }
+            //2 4
+            //1 2 4 5 2 4 3 7 6 8 9
+            curr = curr.next;
+        }
+    }
+
+    public static boolean contain(int s, int t, int x) {
+        return x >= s && x <= t;
+    }
+    //第七题 victory true
+
+    //第八题:编写算法找出两个单链表(没说有无头结点)中公共的节点
+    //答案算法:分别遍历求出两个链表的长度,两者差设为x,长的先走x,(如果两个有相同的节点那么一定是Y字形的,
+    //因为节点只有一个next,一个节点相同后不可能再出现分叉.所以如果有相同的节点那最后一个一定相同),
+    //由于他们(长和短)是同时到达终点,即同时到达第一个相同的节点,从此便都是相同的节点
+    public static void test08() {
+        LinkList_head list1 = new LinkList_head();
+        LinkList_head list2 = new LinkList_head();
+        LNode n1 = new LNode(1);
+        LNode n2 = new LNode(2);
+        LNode n3 = new LNode(3);
+
+        LNode n0 = new LNode(0);
+        LNode n_1 = new LNode(-1);
+        LNode n_2 = new LNode(-2);
+        LNode n_3 = new LNode(-3);
+
+        LNode n4 = new LNode(4);
+        LNode n5 = new LNode(5);
+        LNode n6 = new LNode(6);
+
+        n1.next = n2;
+        n2.next = n3;
+        n3.next = n4;
+
+        n0.next = n_1;
+        n_1.next = n_2;
+        n_2.next = n_3;
+        n_3.next = n4;
+
+        n4.next = n5;
+        n5.next = n6;
+        n6.next = null;
+
+        list1.tailInsert(n1);
+        list2.tailInsert(n0);
+        LNode temp = method08(list1, list2);
+        while (temp != null) {
+            System.out.println(temp.data);
+            temp = temp.next;
+        }
+
+    }
+
+    //返回相同节点的入口
+    public static LNode method08(LinkList_head list1, LinkList_head list2) {
+        //暴力算法
+        //破坏算法:将其中的一个链表的元素全部变为'#'
+        //然后遍历第二个链表,如果发现有元素的值为'#',就是公共节点
+        int len1 = -1;
+        int len2 = -1;
+        LNode head1 = list1.getHeadNode();
+        LNode head2 = list2.getHeadNode();
+        while (head1 != null) {
+            head1 = head1.next;
+            len1++;
+        }
+        while (head2 != null) {
+            head2 = head2.next;
+            len2++;
+        }
+        int x = Math.abs(len1 - len2);
+        //默认len1小于len2
+        LNode node2 = list2.getHeadNode().next;
+        while (x != 0) {
+            node2 = node2.next;
+            x--;
+        }
+        LNode node1 = list1.getHeadNode().next;
+        while (node1 != null && node1 != node2) {
+            node1 = node1.next;
+            node2 = node2.next;
+        }
+        if (node1 == node2)
+            return node1;
+        return null;
+    }
+    //第八题 victory true
+
+    //第九题:带头结点的单链表,按照递增输出(不准用数组作为辅助空间)
+    //答案算法:和我一样(是要比较当前节点的下一个节点和前一个节点的下一个节点,
+    //而不是再去新设置指针表示 )
+    public static void test09() {
+        //算法:每次遍历一遍找到最小值,然后在遍历一遍删除那个节点,如此反复直到链表为空
+        LinkList_head list = new LinkList_head();
+        list.tailInsert();
+        method09(list.getHeadNode());
+    }
+
+    public static void method09(LNode head) {//head为头节点
+        /*int min= list.get(1);
+        int index=1;
+        int minIndex=1;
+        LNode temp=list.getHeadNode().next;
+        int len=list.getLength();
+        while (len!=0) {
+            while (temp != null) {
+                if (temp.data < min) {
+                    min = temp.data;
+                    minIndex = index;
+                }
+                index++;
+                temp = temp.next;
+            }
+            System.out.println(min);
+            list.deleteNode(minIndex);
+            len--;
+        }*/
+        //我就不该相信delete能让我简单
+
+        //3.0
+        //比较当前节点的下一个节点和前一个节点的下一个节点
+        while (head.next != null) {
+            LNode p = head.next;
+            LNode prev = head;
+            //让工作指针p走完一圈
+            while (p.next != null) {
+                if (prev.next.data > p.next.data) {//如果p大于p的下一个节点
+                    //也就是p.next是有可能删除的节点
+                    prev = p;
+                    //只保留前一个指针就行
+                }
+                p = p.next;//要不然是死循环
+            }
+            //进行打印和删除
+            //System.out.println(p.data);p走到最后(跳出循环)是最后一个节点
+            System.out.println(prev.next.data);
+            //删除
+            prev.next = prev.next.next;
+        }
+        //删除头结点
+    }
+    //第九题 victory true
+
+    //第十题:将一个带头结点的链表分为两个带头结点的链表,原来链表中序号是单数一个,偶数另一个;且元素之间相对顺序不变
+    //答案:设置一个访问序号变量的奇偶性来决定插入哪一个链表
+    public static void test10() {
+        /*LinkList_head list = new LinkList_head();
+        list.tailInsert();
+        System.out.println("输入结束");
+        LNode p1 = list.getHeadNode().next;//第一个单数节点
+        LNode p2 = null;
+        if (list.getLength() >= 2) {
+            p2 = method10(list).next;//第一个偶数节点
+        }
+        while (p1 != null) {
+            System.out.print(p1.data + " ");
+            p1 = p1.next;
+        }
+        System.out.println("左边是单数元素");
+        while (p2 != null) {
+            System.out.printf(p2.data + " ");
+            p2 = p2.next;
+        }
+        System.out.println("左边是偶数元素");*/
+        LinkList_head list = new LinkList_head();
+        list.tailInsert();
+        LNode head = method10(list);
+        list.show();
+        System.out.println("--------");
+        show(head.next);
+
+    }
+
+    //以head为头结点,尾插法插入temp节点
+    public static void tailInsert(LNode head, LNode temp) {
+        while (head.next != null) {
+            head = head.next;
+        }
+        head.next = temp;
+        temp.next = null;
+    }
+
+    //public static void method10(LinkList_head list,LNode newHead) {//newHead表示偶数号节点的表头节点
+    //以上有bug,就是newHead的值根本不变
+    public static LNode method10(LinkList_head list) {//返回偶数号节点的表头节点
+        //算法思想:
+        //设置两个指针分别移动
+        /*if (list_head.getLength() <= 1) {//空链表或者只有一个节点
+            return null;
+        }
+        //创立偶数序号节点的头结点
+        LNode ret = new LNode();
+        LNode i = list_head.getHeadNode().next;//第一个节点
+        LNode j = i.next;//第二个节点
+        ret.next = j;
+        while (true) {
+            if (i.next != null) {
+                if (i.next.next != null) {
+                    LNode temp = i.next.next;
+                    i.next = temp;
+                    i = temp;
+                } else {
+                    //i.next=null;
+                    break;
+                }
+            } else {//i.next==null
+                break;
+            }
+        }
+        //以下代码有bug,上面的操作已经改变了单链表结构
+        while (true) {
+            if (j.next != null) {
+                if (j.next.next != null) {
+                    LNode temp = j.next.next;
+                    j.next = temp;
+                    j = temp;
+                } else {//j.next.next==null
+                    j.next = null;
+                    break;
+                }
+            } else {//j.next==null
+                break;
+            }
+        }
+        i.next = null;
+        return ret;*///failure1.0
+        LNode prev = list.getHeadNode();//前置指针
+        LNode newHead = new LNode();
+        int count = 1;
+        LNode p = prev.next;//工作指针
+        while (p != null) {
+            if (count % 2 == 0) {
+                LNode temp = p;
+                p = p.next;
+                tailInsert(newHead, temp);
+            } else {//奇数
+                // p指向当前的count个节点
+                prev = p;
+                p = p.next;
+                if (p == null)
+                    break;
+                prev.next = p.next;
+            }
+            count++;
+        }
+        return newHead;
+    }
+    //第十题 victory true
+
+
+    //第十一题:带头结点的单链表分成两个单链表,其中单数号的为一支,(偶数号的为第二支,但要求是逆置的)
+    //算法思想:与上题类似,但是不设置访问序号变量,逆置首先想到逆置算法其次就是本题要用的 <<头插法>>
+    //答案的理解不了,我还是要设序号变量
+    public static void test11() {
+        LinkList_head list = new LinkList_head();
+        list.tailInsert();
+        LNode head = method11(list);
+        list.show();
+        System.out.println("------------");
+        show(head.next);
+
+    }
+
+    public static void headInsert(LNode head, LNode temp) {
+        temp.next = head.next;
+        head.next = temp;
+    }
+
+    public static LNode method11(LinkList_head list) {
+        LNode prev = list.getHeadNode();//前置指针
+        LNode newHead = new LNode();
+        int count = 1;
+        LNode p = prev.next;//工作指针
+        while (p != null) {
+            if (count % 2 == 0) {
+                LNode temp = p;
+                p = p.next;
+                //tailInsert(newHead,temp);
+                headInsert(newHead, temp);
+            } else {//奇数
+                // p指向当前的count个节点
+                prev = p;
+                p = p.next;
+                if (p == null)
+                    break;
+                prev.next = p.next;
+            }
+            count++;
+        }
+        return newHead;
+    }
+    //第十一题 victory true
+
+    //第十二题:递增有序的单链表中(没说是否带头结点)去除多余的元素使每个元素独一无二
+    public static void test12() {
+        LinkList_head list = new LinkList_head();
+        //list.headInsert();
+        list.tailInsert();
+        method12(list);
+        list.show();
+    }
+
+    public static void method12(LinkList_head list) {
+        //LNode prev=list.getHeadNode();//开始时指向头节点
+        /*LNode prev = list.getHeadNode().next;//第一个节点
+        LNode curr = prev.next;//第二个
+        while (curr != null) {
+            while (true) {
+                if (curr != null) {
+                    if (curr.data == prev.data) {
+                        curr = curr.next;
+                    } else {
+                        prev.next = curr;
+                        break;
+                    }
+                } else {//curr==null
+                    break;
+                }
+            }
+            if (curr != null) {
+                prev = curr;
+                curr = curr.next;
+            }
+        }*///failure 1.0
+        LNode prev = list.getHeadNode();//开始时指向头节点
+        LNode curr = list.getHeadNode().next;
+        while (curr != null) {
+            if (prev.data != curr.data) {
+                prev = curr;
+            } else {//值相等
+                prev.next = curr.next;
+            }
+            curr = curr.next;
+        }
+    }
+
+    //第十二题//victory true
+
+    //第十三题:将两个递增的单链表归并为一个递减的单链表要求这个新的单链表是原来的两个链表的节点
+    //类似于归并排序,只不过是头插法
+    public static void test13() {
+        /*LNode n1 = new LNode(1);
+        LNode n2 = new LNode(2);
+        LNode n3 = new LNode(3);
+        LNode n4 = new LNode(4);
+        LNode n5 = new LNode(5);
+        LNode n6 = new LNode(6);
+        LinkList_head list1 = new LinkList_head();
+        LinkList_head list2 = new LinkList_head();
+        list1.tailInsert(n1);
+        list1.tailInsert(n2);
+        list1.tailInsert(n3);
+        list2.tailInsert(n4);
+        list2.tailInsert(n5);
+        list2.tailInsert(n6);
+        LinkList_head list3 = method13(list1, list2);
+        list3.show();*/
+        LinkList_head list1 = new LinkList_head();
+        LinkList_head list2 = new LinkList_head();
+        System.out.println("请输入list1中的元素");
+        list1.tailInsert();
+        System.out.println("请输入list2中的元素");
+        list2.tailInsert();
+        LinkList_head list3 = method13(list1, list2);
+        list3.show();
+    }
+
+    public static LinkList_head method13(LinkList_head list1, LinkList_head list2) {//采用头插法
+        LinkList_head ret = new LinkList_head();
+        LNode i1 = list1.getHeadNode();//list1的头节点
+        LNode i2 = list2.getHeadNode();//list2的头节点
+        while (i1.next != null && i2.next != null) {
+            if (i1.next.data <= i2.next.data) {
+                LNode temp = i1.next.next;
+                ret.headInsert(i1.next);
+                i1.next = temp;
+            } else {
+                LNode temp = i2.next.next;
+                ret.headInsert(i2.next);
+                i2.next = temp;
+            }
+        }
+        while (i1.next != null) {
+            LNode temp = i1.next.next;
+            ret.headInsert(i1.next);
+            i1.next = temp;
+        }
+        while (i2.next != null) {
+            LNode temp = i2.next.next;
+            ret.headInsert(i2.next);
+            i2.next = temp;
+        }
+        return ret;
+    }
+
+    //第十三题 victory true
+    //第十四题:两个递增有序的单链表(带头结点),从中找出相同的元素,组成一个新的单链表,要求不破坏原来链表的节点,即新链表中的节点都是new出来的
+    public static void test14() {
+        /*LNode n1 = new LNode(1);
+        LNode n2 = new LNode(2);
+        LNode n3 = new LNode(3);
+        LNode n4 = new LNode(4);
+        LNode n5 = new LNode(5);
+        LNode n6 = new LNode(6);
+
+        LNode node2 = new LNode(2);
+        LNode node3 = new LNode(3);
+        LNode node4 = new LNode(4);
+
+        LinkList_head list1 = new LinkList_head();
+        LinkList_head list2 = new LinkList_head();
+        list1.tailInsert(n1);
+        list1.tailInsert(n2);
+        list1.tailInsert(n3);
+
+        list2.tailInsert(node2);
+        list2.tailInsert(node3);
+        list2.tailInsert(node4);
+
+        LinkList_head list3 = method14(list1, list2);
+        list3.show();*/
+
+        LinkList_head list1 = new LinkList_head();
+        LinkList_head list2 = new LinkList_head();
+        System.out.println("请输入list1中的元素");
+        list1.tailInsert();
+        System.out.println("请输入list2中的元素");
+        list2.tailInsert();
+        LinkList_head list3 = method14(list1, list2);
+        System.out.println("芝士list3");
+        try {
+            list3.show();
+        } catch (Exception e) {
+            System.out.println("输入数据有误,请检查后重新输入");
+            throw new NullPointerException();
+        }
+        System.out.println("芝士list2");
+        list2.show();
+        System.out.println("芝士list1");
+        list1.show();
+    }
+
+    public static LinkList_head method14(LinkList_head list1, LinkList_head list2) {
+        if (list1.getLength() == 0 || list2.getLength() == 0)
+            return null;
+        LNode i1 = list1.getHeadNode().next;//list1的第一个节点
+        LNode i2 = list2.getHeadNode().next;//list2的第二个节点
+        LinkList_head ret = new LinkList_head();
+        while (i1 != null && i2 != null) {
+            if (i1.data > i2.data) {
+                i2 = i2.next;
+            } else if (i1.data < i2.data) {
+                i1 = i1.next;
+            } else {
+                LNode temp = new LNode(i1.data);
+                i1 = i1.next;
+                i2 = i2.next;
+                ret.tailInsert(temp);
+            }
+        }
+        return ret;
+    }
+    //第十四题 victory true
+
+    //第十五题:a,b表示两个不同的集合,均是递增排列,求他们的交集并存储在a中
+    //我的大概思路:和十四题一样,不过最后把元素返回到a中
+    //答案:利用归并的思想
+    //我的答案仅供参考!!!!!!
+    public static void test15() {
+        LinkList_head list1 = new LinkList_head();
+        LinkList_head list2 = new LinkList_head();
+        System.out.println("请按照升序输入list1中的元素");
+        list1.tailInsert();
+        System.out.println("请按照升序输入list2中的元素");
+        list2.tailInsert();
+        method15(list1,list2);
+        list1.show();
+    }
+
+    public static void method15(LinkList_head list1, LinkList_head list2) {
+        LNode temp1 = list1.getHeadNode().next;
+        LNode temp2 = list2.getHeadNode().next;
+        //java中没有free,将相同的节点先自成一列,设置一个头结点,之后头结点易主
+        LNode newHead = new LNode();
+        int count = 0;
+        while (temp1 != null && temp2 != null) {
+            if (temp1.data < temp2.data) {
+                temp1 = temp1.next;
+            } else if (temp1.data == temp2.data) {
+                //接上节点
+                //关键在于只遍历一次,因为之后节点全乱了
+                //讨巧的设置一个计数器,记录链接上了多少个节点
+                int p = count;
+                LNode temp = newHead;
+                while (p != 0) {
+                    temp = temp.next;
+                    p--;
+                }
+                temp.next = temp1;
+                count++;
+                //bug之以下之前没写
+                //两个指针分别向后移动
+                temp1=temp1.next;
+                temp2=temp2.next;
+                //也可以设置一个指针,指向最后一个相同的节点,相同的节点采用头插法,最后一个节点next设置为null
+            } else {//temp1.data>temp2.data
+                temp2 = temp2.next;
+            }
+        }
+        //遍历完其中一个链表
+        LNode tmp = newHead;
+        while (count != 0) {
+            tmp = tmp.next;
+            count--;
+        }
+        //找到最后一个相同的节点
+        tmp.next = null;
+        list1.getHeadNode().next = newHead.next;
+    }
+    //第十五题 victory true
+
+    //第十六题:有两个单链表,判断第二个单链表是否是第一个的连续子链表
+    public static void test16() {
+        /*LNode n1 = new LNode(1);
+        LNode n2 = new LNode(2);
+        LNode n3 = new LNode(3);
+        LNode n4 = new LNode(4);
+        LNode n5 = new LNode(5);
+        LNode n6 = new LNode(6);
+        LNode node2 = new LNode(2);
+        LNode node3 = new LNode(3);
+        LNode node4 = new LNode(4);
+
+        LinkList_head list1 = new LinkList_head();
+        LinkList_head list2 = new LinkList_head();
+
+        list1.tailInsert();
+
+        list2.tailInsert(node2);
+        list2.tailInsert(node3);
+        list2.tailInsert(node4);*/
+        LinkList_head list1 = new LinkList_head();
+        LinkList_head list2 = new LinkList_head();
+        System.out.println("请输入list1的元素");
+        list1.tailInsert();
+        System.out.println("请输入list2的元素");
+        list2.tailInsert();
+
+        if (method16(list1, list2)) {
+            System.out.println("list2是list1的子链");
+        } else {
+            System.out.println("list2不是list1的子链");
+        }
+    }
+
+    public static boolean method16(LinkList_head list1, LinkList_head list2) {
+        //判断list2是否是list1的连续子链表
+        LNode start = list2.getHeadNode().next;//list2的第一个节点
+        LNode i1 = list1.getHeadNode().next;
+        while (i1 != null && start != null) {
+            if (i1.data == start.data) {
+                i1 = i1.next;
+                start = start.next;
+            } else {
+                i1 = i1.next;
+                start = list2.getHeadNode().next;
+            }
+        }
+        return start == null;
+    }
+
+    //第十六题 victory true
+    //第十七题:判断带头节点的循环双链表是否对称
+    public static void test17() {
+        DCycleLinkList_head list = new DCycleLinkList_head();
+        list.tailInsert();
+        System.out.println("对称:" + method17(list));
+        //list.show();
+    }
+
+    public static boolean method17(DCycleLinkList_head list) {
+        Node start = list.getHeadNode().next;
+        Node end = list.getHeadNode().prev;
+        while (start.next != end && start != end) {
+            if (start.data != end.data)
+                return false;
+            start = start.next;
+            end = end.prev;
+        }
+        if (start.next == end) {
+            return start.data == end.data;
+        } else {
+            return true;
+        }
+
+    }
+    //第十七题 victory true
+
+    //第十八题:有两个循环单链表,将第二个连接到第一个后面,而且保证连接后的单链表仍然是循环单链表
+    public static void test18() {
+        LinkCycleList_head list1 = new LinkCycleList_head();
+        LinkCycleList_head list2 = new LinkCycleList_head();
+        System.out.println("请输入list1中的元素");
+        list1.tailInsert();
+        System.out.println("请输入list2中的元素");
+        list2.tailInsert();
+        method18(list1, list2);
+        list1.show();
+    }
+
+    public static void method18(LinkCycleList_head list1, LinkCycleList_head list2) {
+        //1.找到list1的最后一个节点
+        LNode temp = list1.getHeadNode();
+        while (temp.next != list1.getHeadNode()) {
+            temp = temp.next;
+        }
+
+        //2.找到list2的最后一个节点
+        LNode tmp = list2.getHeadNode();
+        while (tmp.next != list2.getHeadNode()) {
+            tmp = tmp.next;
+        }
+
+        //拼接链表
+        temp.next = list2.getHeadNode().next;//指向list2的第一个节点
+        tmp.next = list1.getHeadNode();
+
+    }
+    //第十八题 victory true
+
+    //第十九题:带头结点的循环单链表,存储的均是正整数,反复找出当中最小的节点并输出,并且将该节点删除.当链表为空时,删除头结点
+    public static void test19() {
+        LinkCycleList_head list = new LinkCycleList_head();
+        list.tailInsert();
+        method19(list);
+        if (list.getHead() == null) {
+            System.out.println("已经删除头结点了");
+        } else {
+            System.out.println("有bug");
+        }
+    }
+
+    public static void method19(LinkCycleList_head list) {
+        //1.第一遍先找出min元素同时记录list中元素个数
+        while (list.getHeadNode().next != list.getHeadNode()) {
+            //1.确定最小元素
+            int min = list.getHeadNode().next.data;//min初始化为第一个元素
+            LNode prev = list.getHeadNode();
+            LNode curr = list.getHeadNode().next;
+            while (curr != list.getHeadNode()) {
+                if (curr.data < min) {
+                    min = curr.data;
+                }
+                curr = curr.next;
+            }
+            System.out.println(min);
+            //2.找到最小元素进行删除
+            //此时curr==list的headNode
+            while (curr.data != min) {
+                prev = curr;
+                curr = curr.next;
+            }
+            //3.删除
+            prev.next = curr.next;
+        }
+        //删除头结点
+        list.setHeadNode(null);
+        list.setHead(null);
+    }
+    //第十九题 victory true
+
+    //第二十题:有一个带头结点头指针为L的非循环双向链表,它的每个节点额外多了一个频度域,链表启用频度域均为0
+    //每当在链表中进行locate(L,x)运算时,命令链表中值为x的频度域加一,并使链表中的节点按照非递增顺序排列
+    //同时使最近访问的节点排在频度相同节点的前面,编写locate函数,返回找到节点的地址
+    public static void test20() {
+        Scanner in = new Scanner(System.in);
+        list_20 list = new list_20();
+        list.tailInsert();
+        while (true) {
+            System.out.println("请输入查找的x的值,输入999表示退出");
+            int x = in.nextInt();
+            if (x == 999)
+                break;
+            method20(list.getHead(), x);
+        }
+        list.show();
+    }
+
+    public static void method20(node_20 head, int x) {
+       /* //1.找到值为x的节点
+        node_20 temp=head.next;
+        while (temp.next!=null && temp.data!=x){
+            temp=temp.next;
+        }
+        ++temp.freq;
+        //2.找到他应该的位置
+        node_20 loc=head.next;
+        while (loc.freq>temp.freq){
+            loc=loc.next;
+        }
+        //loc是小于或者等于temp.freq
+        //3.调整节点
+        temp.prev.next=temp.next;
+        if(temp.next!=null)
+            temp.next.prev=temp.prev;
+
+        if(temp!=loc){
+            temp.next=loc;//bug
+            temp.prev=loc.prev;
+            loc.prev.next=temp;
+            loc.prev=temp;
+        }
+*///failure
+        //根据节点的频度来找到它的位置
+
+        //1.找到该节点
+        node_20 p = head.next;//工作节点
+        while (p.data != x) {
+            p = p.next;
+            if (p == null)
+                break;
+        }
+        //此时p所指即是x的节点
+        if (p == null) {
+            System.out.println("查找失败");
+            return;
+        }//特殊情况
+        p.freq++;
+        //2.确认位置
+        node_20 p1 = head;//工作指针2
+        do {
+            p1 = p1.next;
+        } while (p1.freq > p.freq);
+        if (p1 == p || p1.prev == p) {//就在原位
+
+        } else {
+            //调整p的前后位置
+            if (p.next != null) {
+                p.prev.next = p.next;
+                p.next.prev = p.prev;
+            } else {
+                //p.next==null
+                p.prev.next = null;
+            }
+
+            //调整p应该的位置
+            p.next = p1;
+            p.prev = p1.prev;
+            p1.prev.next = p;
+            p1.prev = p;
+        }
+    }
+    //第二十题 victory true
+
+    //第二十一题:有带头结点的单链表,且该链表只给出了头指针,再不改变链表的前提下,用尽可能高效的算法,
+    //求出倒数第k个位置的节点,查找成功,输出节点的值并返回1,否则只返回0
+    public static void test21() {
+        LinkList_head list = new LinkList_head();
+        list.tailInsert();
+        Scanner sc = new Scanner(System.in);
+        System.out.println("请输入倒数第几个元素");
+        int x = sc.nextInt();
+        System.out.println(method21(list.getHead(), x));
+    }
+
+    //设置两个指针,第一个往前先走k个节点,然后两个节点同时出发,直到先出发的节点到达null,后出发的节点即为所求
+    public static int method21(LNode head, int k) {
+
+        LNode low = head.next;//第一个节点
+        LNode fast = head;
+        for (int i = 0; i < k; i++) {
+            if (fast.next != null) {
+                fast = fast.next;
+            } else {
+                return 0;
+            }
+        }
+        while (fast.next != null) {
+            low = low.next;
+            fast = fast.next;
+        }
+        System.out.println(low.data);
+        return 1;
+
+    }
+
+    //第二十一题 victory true
+
+    //第二十二题:找出用带头结点的单链表存储的单词共同的后缀;如doing和swimming中相同的后缀是ing,
+    // 返回两个链表共同的起始位置,如ing中的i地节点位置
+    //答案算法:分别遍历求出两个链表的长度,长的先走,走到与短的一般长时一起走
+    public static void test22() {
+        LNode n1 = new LNode(1);
+        LNode n2 = new LNode(2);
+        LNode n3 = new LNode(3);
+        LNode n4 = new LNode(4);
+        LNode n5 = new LNode(5);
+        LNode n6 = new LNode(6);
+        /*LNode node2 = new LNode(4);
+        LNode node3 = new LNode(5);
+        LNode node4 = new LNode(6);*/
+        LNode n_1 = new LNode(-1);
+        LNode n_2 = new LNode(-2);
+
+
+        LinkList_head list1 = new LinkList_head();
+        LinkList_head list2 = new LinkList_head();
+        list1.tailInsert(n1);
+        list1.tailInsert(n2);
+        list1.tailInsert(n3);
+        list1.tailInsert(n4);
+        list1.tailInsert(n5);
+        list1.tailInsert(n6);
+
+        list2.tailInsert(n_1);
+        list2.tailInsert(n_2);
+        list2.tailInsert(n4);
+        /*list2.tailInsert(n5);
+        list2.tailInsert(n6);*/
+        //加进去会造成链表死循环
+        System.out.println(method22(list1, list2));
+    }
+
+    public static int method22(LinkList_head str1, LinkList_head str2) {//假设str1长一些,str2长同理
+        /*LNode temp = str1.getHeadNode().next;
+        while (temp.next != null) {
+            temp.data = -999;
+            temp = temp.next;
+        }
+
+        return 1;*/
+
+       /* int len1= str1.getLength();
+        int len2= str2.getLength();
+        int x=Math.abs(len1-len2);*/
+        int len1 = 0;
+        LNode temp1 = str1.getHeadNode();
+        while (true) {
+            temp1 = temp1.next;
+            if (temp1 == null) {
+                break;
+            }
+            len1++;
+        }
+        int len2 = 0;
+        LNode temp2 = str2.getHeadNode();
+        while (true) {
+            temp2 = temp2.next;
+            if (temp2 == null)
+                break;
+            len2++;
+        }
+        int x = Math.abs(len1 - len2);
+
+        LNode p1 = str1.getHeadNode().next;
+        LNode p2 = str2.getHeadNode().next;
+        while (x != 0) {
+            p1 = p1.next;
+            x--;
+        }
+        while (p1 != p2) {
+            p1 = p1.next;
+            p2 = p2.next;
+        }
+        return p1.data;
+
+    }
+    //第二十二题 victory true
+
+    //第二十三题:用(包含头结点)单链表保存m个整数,其中整数的绝对值小于n,要求
+    //复杂度尽可能好的算法,删除链表中绝对值相等的元素,使得链表中每个元素都不相同
+    //以空间换时间
+    public static void test23() {
+        System.out.println("请输入一个界限,使得接下来输入的每个值都小于它");
+        Scanner in = new Scanner(System.in);
+        int n = in.nextInt();
+        LinkList_head list = new LinkList_head();
+        list.tailInsert();
+        method23(n, list);
+        list.show();
+    }
+
+    public static void method23(int n, LinkList_head list) {
+        int[] arr = new int[n];
+        Arrays.fill(arr, 0);
+        LNode temp = list.getHeadNode().next;
+        LNode prev = list.getHeadNode();
+        while (temp != null) {
+            int i = Math.abs(temp.data);
+            if (arr[i] == 0) {
+                arr[i] = 1;
+                prev = temp;
+            } else {//进行删除
+                prev.next = temp.next;
+            }
+            temp = temp.next;
+        }
+    }
+    //第二十三题 Victory true
+
+    //第二十四题:判断链表是否有环,有的话返回环的入口,没有返回null
+    //答案思想:与我大致相同,判断入口是设置两个指针一个出发点,一个从相遇点,两个一起移动,当再次相遇时就是入口
+    public static void test24() {
+        //LinkList_head list=new LinkList_head();
+        //LinkCycleList_head list=new LinkCycleList_head();
+        /*list.tailInsert();
+        System.out.println(method24(list));*/
+        LNode n1 = new LNode(1);
+        LNode n2 = new LNode(2);
+        LNode n3 = new LNode(3);
+        LNode n4 = new LNode(4);
+        LNode n5 = new LNode(5);
+        LNode n6 = new LNode(6);
+        LNode n7 = new LNode(7);
+        LNode list = new LNode();
+        list.next = n1;
+        n1.next = n2;
+        n2.next = n3;
+        n3.next = n4;
+        n4.next = n5;
+        n5.next = n6;
+        n6.next = n7;
+        n7.next = n3;
+        //n3是入口
+        System.out.println(method24(list));
+    }
+
+    public static int method24(LNode list) {
+        LNode low = list;
+        //LNode fast=list.next;//bug在于两人要从统一起跑线上出发
+        LNode fast = list;
+        while (fast != null && fast.next != null) {
+            low = low.next;
+            fast = fast.next.next;
+            if (low == fast)
+                break;
+        }
+        if (fast == null || fast.next == null) {
+            return -1;
+        } else {//low==fast
+            //return low.data;//返回值有问题,返回的不是入口
+            LNode p1 = low;
+            LNode p2 = list;
+            while (p1 != p2) {
+                p1 = p1.next;
+                p2 = p2.next;
+            }
+            return p1.data;
+        }
+    }
+    //第二十四题 victory true
+
+    //第二十五题:将用带头结点链表表示的1,2,3,4...n,变为1,n,2,n-1.....
+    //要求空间复杂度为O(1)时间复杂度尽可能高效
+    public static void test25() {
+        LinkList_head list = new LinkList_head();
+        list.tailInsert();
+        method25(list.getLength(), list);
+        list.show();
+    }
+
+    //算法思想:第一次reverse变为1,n,n-1,n-2,n-3...
+    //第二次变为1,n,2,3,4...n-1
+    //第三次变为1,n,2,n-1,n-2,n-3,..
+    //第四次变为1,n,2,n-1,3,4,5....
+    public static void method25(int n, LinkList_head list) {
+        for (int i = 2; i <= n; i++) {
+            reverse(i, list);
+        }
+    }
+
+    public static void reverse(int i, LinkList_head list) {//以第i-1个节点为头结点
+        //采用头插法进行reverse
+        //找到第i-1个节点 head
+        int count = 1;
+        LNode head = list.getHeadNode().next;//第一个节点
+        while (count != i - 1) {
+            head = head.next;
+            count++;
+        }
+        //head就是头结点
+        /*LNode temp=head.next;//第一个节点
+        LNode p=temp.next;//temp的后面一个节点
+        head.next=null;
+        //2.使用头插法
+        while(true){
+            temp.next=head.next;
+            head.next=temp;
+            temp=p;
+            if(p==null)
+                break;
+            p=p.next;
+        }*/
+        LNode temp = head.next;
+        LNode p = temp.next;
+        head.next = null;
+        while (true) {
+            temp.next = head.next;
+            head.next = temp;
+            temp = p;
+            if (p == null)
+                break;
+            p = p.next;
+        }
+    }
+    //第二十五题 victory true
+}
+
+class node_20 {
+    public int data;
+    public node_20 prev;
+    public node_20 next;
+    public int freq;
+
+    public node_20(int data, node_20 prev, node_20 next, int freq) {
+        this.data = data;
+        this.prev = prev;
+        this.next = next;
+        this.freq = freq;
+    }
+
+    public node_20(int data) {
+        freq = 0;
+        prev = null;
+        next = null;
+        this.data = data;
+    }
+}//专门为20题写的节点
+
+class list_20 {
+    private node_20 head;
+    private node_20 headNode;
+    private int length;
+
+    public list_20() {
+        headNode = new node_20(0);
+        head = headNode;
+        length = 0;
+    }
+
+    public void headInsert() {
+        //System.out.println("请输入节点的值,输入999表示停止");
+        Scanner in = new Scanner(System.in);
+        while (true) {
+            System.out.println("请输入节点的值,输入999表示停止");
+            int x = in.nextInt();
+            if (x == 999)
+                break;
+            node_20 temp = new node_20(x);
+            headNode.next.prev = temp;
+            headNode.next = temp;
+            temp.next = headNode.next;
+            temp.prev = headNode;
+            length++;
+        }
+    }
+
+    public void tailInsert() {
+        Scanner in = new Scanner(System.in);
+        while (true) {
+            node_20 temp = headNode;
+            System.out.println("请输入一个元素,输入999表示停止");
+            int x = in.nextInt();
+            if (x == 999)
+                break;
+            node_20 tmp = new node_20(x);
+            while (temp.next != null) {
+                temp = temp.next;
+            }
+            tmp.next = temp.next;
+            tmp.prev = temp;
+            temp.next = tmp;
+            length++;
+        }
+    }
+
+    public void show() {
+        node_20 temp = headNode.next;
+        while (temp != null) {
+            System.out.println("数据:" + temp.data + " 频度:" + temp.freq);
+            temp = temp.next;
+        }
+    }
+
+    public node_20 getHead() {
+        return head;
+    }
+
+    public node_20 getHeadNode() {
+        return headNode;
+    }
+
+    public int getLength() {
+        return length;
+    }
+}//专门为20题写的带头结点头指针为L的非循环双向链表
+
+class LNode {
+    public LNode next;
+    public int data;
+
+    public LNode() {
+        data = 0;
+        next = null;
+    }
+
+    public LNode(int data) {
+        this.next = null;
+        this.data = data;
+    }
+
+    public LNode(LNode node) {
+        data = 0;
+        next = node;
+    }
+
+}
+
+class LinkList_noHead {
+    public LNode head;
+    public int length;
+
+    public LinkList_noHead() {
+        head = null;
+        length = 0;
+    }
+
+    public LinkList_noHead(LNode head, int length) {
+        this.head = head;
+        this.length = length;
+    }
+
+    public void headInsert() {
+        Scanner in = new Scanner(System.in);
+        while (true) {
+            System.out.println("请输入一个整数,输入999表示停止");
+            int x = in.nextInt();
+            if (x == 999)
+                break;
+            LNode temp = new LNode(x);
+            temp.next = head.next;
+            head.next = temp;
+            length++;
+        }
+    }
+
+    public void tailInsert() {
+        Scanner in = new Scanner(System.in);
+        System.out.println("请输入一个整数,输入999表示退出");
+        int x = in.nextInt();
+        if (x == 999)
+            return;
+        LNode temp = new LNode(x);
+        temp.next = null;
+        head = temp;
+        length++;
+        while (true) {
+            System.out.println("请输入一个整数,输入999表示退出");
+            x = in.nextInt();
+            if (x == 999)
+                break;
+            LNode tmp = new LNode(x);
+            LNode p = head;
+            while (p.next != null) {
+                p = p.next;
+            }
+            p.next = tmp;
+            tmp.next = null;
+            length++;
+        }
+    }
+
+    public void show() {
+        LNode p = head;
+        while (p != null) {
+            System.out.println(p.data);
+            p = p.next;
+        }
+    }
+}
+
+class LinkList_head {//单链表(带头结点)
+    private LNode headNode;//头结点
+    private LNode head;//头指针
+    private int length;//长度
+
+    public LinkList_head() {
+        headNode = new LNode();
+        head = headNode;
+        length = 0;
+    }
+
+    public LinkList_head(LNode headNode, LNode head, int length) {
+        this.headNode = headNode;
+        this.head = head;
+        this.length = length;
+    }
+
+    public void headInsert(LNode n) {
+        n.next = headNode.next;
+        headNode.next = n;
+        length++;
+    }
+
+    public void headInsert() {//头插法建立单链表
+        //倒序显示元素
+        Scanner in = new Scanner(System.in);
+        while (true) {
+            System.out.println("这时头插法插入元素,输入9999停止输入");
+            int x = in.nextInt();
+            if (x == 9999) {
+                break;
+            }
+            LNode temp = new LNode(x);
+            temp.next = headNode.next;
+            headNode.next = temp;
+            length++;
+        }
+    }
+
+    public void tailInsert(LNode n) {
+        LNode p = this.headNode;
+        while (p.next != null) {
+            p = p.next;
+        }
+        p.next = n;
+        //n.next=null;
+        length++;
+    }
+
+    public void tailInsert() {//尾插法建立单链表
+        //正序显示元素
+        Scanner in = new Scanner(System.in);
+        LNode p = headNode;
+        while (true) {
+            System.out.println("请输入一个整数元素,输入9999表示退出");
+            int x = in.nextInt();
+            if (x == 9999) {
+                break;
+            }
+            LNode temp = new LNode(x);
+            p.next = temp;
+            temp.next = null;
+            p = temp;
+            length++;
+        }
+    }
+
+    public void show() {
+        if (length == 0)
+            return;
+        LNode p = headNode.next;
+        while (p != null) {
+            System.out.println(p.data);
+            p = p.next;
+        }
+    }
+
+    public int get(int i) {//按序号查找
+        LNode p = headNode.next;
+        while (i != 1) {
+            p = p.next;
+            --i;
+        }
+        return p.data;
+    }
+
+    public LNode getLocation(int e) {//查找e元素所在的节点
+        LNode p = headNode.next;
+        while (p != null) {
+            if (p.data == e) {
+                return p;
+            }
+            p = p.next;
+        }
+        return null;
+    }
+
+    /*public void insert(node n){
+        node p=headNode;
+        while(p.next!=null){
+            p=p.next;
+        }
+        p.next=n;
+        length++;
+    }*/
+    public void insert(int i, LNode n) {
+        if (i <= 1 || i > length + 1) {
+            return;
+        } else {//位置合法
+            LNode p = headNode;
+            while (i != 1) {
+                p = p.next;
+                i--;
+            }
+            n.next = p.next;
+            p.next = n;
+            length++;
+        }
+    }
+
+    public void deleteNode(int i) {
+        if (i < 1 || i > length + 1) {
+            return;
+        } else {//位置合法
+            LNode p = headNode;
+            while (i != 1) {
+                p = p.next;
+                i--;
+            }
+            p.next = p.next.next;
+            length--;
+        }
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public LNode getHeadNode() {
+        return headNode;
+    }
+
+    public LNode getHead() {
+        return head;
+    }
+}
+
+class LinkCycleList_head {//带头结点的单向循环链表
+    private LNode headNode;
+    private LNode head;
+    private int length;
+
+    public LinkCycleList_head() {
+        headNode = new LNode();
+        headNode.next = headNode;
+        head = headNode;
+        length = 0;
+    }
+
+    public void headInsert() {
+        Scanner in = new Scanner(System.in);
+        while (true) {
+            System.out.println("请输入一个元素,输入999表示停止");
+            int x = in.nextInt();
+            if (x == 999) {
+                break;
+            }
+            LNode temp = new LNode(x);
+            temp.next = headNode.next;
+            headNode.next = temp;
+            length++;
+        }
+    }
+
+    public void tailInsert() {
+        Scanner in = new Scanner(System.in);
+        while (true) {
+            System.out.println("请输入元素,输入999时表示停止输入");
+            int x = in.nextInt();
+            if (x == 999) {
+                break;
+            }
+            LNode temp = new LNode(x);
+            LNode p = headNode;
+            while (p.next != headNode) {
+                p = p.next;
+            }//用p表示最后一个节点
+            p.next = temp;
+            temp.next = headNode;
+        }
+    }
+
+    public void show() {
+        LNode temp = headNode.next;
+        while (temp != headNode) {
+            System.out.println(temp.data);
+            temp = temp.next;
+        }
+    }
+
+    public LNode getHeadNode() {
+        return headNode;
+    }
+
+    public LNode getHead() {
+        return head;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public void setHeadNode(LNode headNode) {
+        this.headNode = headNode;
+    }
+
+    public void setHead(LNode head) {
+        this.head = head;
+    }
+}
+
+class Node {//双向链表的节点
+    public int data;
+    public Node prev;
+    public Node next;
+
+    public Node(int data) {
+        this.data = data;
+        prev = null;
+        next = null;
+    }
+
+    public Node(int data, Node prev, Node next) {
+        this.data = data;
+        this.prev = prev;
+        this.next = next;
+    }
+}//双向链表的节点
+
+class DLinkList {//双向链表
+    private int length;
+    private Node headNode;
+    private Node head;
+
+    public void insert(int i, Node n) {//插入
+        if (i <= 1 || i > length + 1) {
+            return;
+        } else {//位置合法
+            Node p = headNode;
+            while (i != 1) {
+                p = p.next;
+                i--;
+            }
+            n.next = p.next;
+            n.prev = p;
+            p.next.prev = n;
+            p.next = n;
+            length++;
+        }
+    }
+
+    public void delete(int i) {
+        if (i <= 1 || i > length + 1) {
+            return;
+        } else {//位置合法
+            Node p = headNode;
+            while (i != 1) {
+                p = p.next;
+                i--;
+            }
+            p.next.next.prev = p;
+            p.next = p.next.next;
+        }
+    }
+}
+
+class DCycleLinkList_head {//带头节点的双向循环链表
+    private Node headNode;
+    private Node head;
+    private int length;
+
+    public DCycleLinkList_head() {
+        headNode = new Node(0, null, null);
+        headNode.next = headNode;
+        headNode.prev = headNode;
+        head = headNode;
+        length = 0;
+    }
+
+    public void headInsert() {
+        /*Scanner in = new Scanner(System.in);
+        System.out.println("这是带头节点的双向循环链表的头插法,请输入元素,输入999表示结束");
+        int x = in.nextInt();
+        if (x == 999) {
+            return;
+        } else {
+            Node temp = new Node(x, headNode, headNode.next);
+            headNode.next = temp;
+            headNode.prev = temp;
+        }
+        while (true) {
+            System.out.println("这是带头节点的双向循环链表的头插法,请输入元素,输入999表示结束");
+            x = in.nextInt();
+            if (x == 999) {
+                break;
+            }
+            Node temp = new Node(x, headNode, headNode.next);
+            headNode.next.prev = temp;
+            headNode.next = temp;
+            length++;
+        }*///有问题1.0
+        //第一个插入的节点在最后会变成最后一个节点
+        System.out.println("请输入元素的值,输入999表示退出");
+        Scanner in = new Scanner(System.in);
+        int x = in.nextInt();
+        if (x == 999)
+            return;
+        Node temp = new Node(x);
+        temp.next = headNode;
+        temp.prev = headNode;
+        headNode.next = temp;
+        headNode.prev = temp;
+        while (true) {
+            x = in.nextInt();
+            if (x == 999)
+                break;
+            Node n = new Node(x);
+            n.next = headNode.next;
+            n.prev = headNode;
+            headNode.next = n;
+            length++;
+        }
+    }
+
+    public void tailInsert() {
+        Scanner in = new Scanner(System.in);
+        while (true) {
+            Node temp = headNode.prev;
+            System.out.println("请输入元素,输入999表示退出");
+            int x = in.nextInt();
+            if (x == 999)
+                break;
+            Node newNode = new Node(x);
+            temp.next = newNode;
+            newNode.prev = temp;
+            newNode.next = headNode;
+            headNode.prev = newNode;
+            length++;
+        }
+    }
+
+    public void show() {
+        Node temp = headNode.next;
+        while (temp != headNode) {
+            System.out.println(temp.data);
+            temp = temp.next;
+        }
+    }
+
+    public Node getHeadNode() {
+        return headNode;
+    }
+
+    public Node getHead() {
+        return head;
+    }
+
+    public int getLength() {
+        return length;
+    }
+}
+//妈的差点突破两千行代码
